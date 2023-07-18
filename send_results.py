@@ -1,8 +1,10 @@
 import json
+
 import joblib
+
 import send_results
 
-MODEL_PATH = 'model.joblib'
+MODEL_PATH = "model.joblib"
 VALID_FEATURES = [
     "brk",
     "mmap",
@@ -38,12 +40,13 @@ VALID_FEATURES = [
     "write",
     "exit_group",
     "+++ exited with 2 +++",
-    "label"
+    "label",
 ]
+
 
 def transform_json_to_instance(json_data):
     # Sostituisci gli apici singoli con apici doppi
-    json_data = json_data.replace("'", "\"")
+    json_data = json_data.replace("'", '"')
     # Converti la stringa JSON in un dizionario Python
     data_dict = json.loads(json_data)
     # Crea una lista vuota per l'istanza
@@ -66,17 +69,14 @@ def predict_instance(model_path, instance):
 
 
 def receive_data(data):
-    print('Received: ' + str(data) + '\n')
-    data = data.split(">, ")[1].split(')')[0]
+    print("Received: " + str(data) + "\n")
+    data = data.split(">, ")[1].split(")")[0]
     print(data)
     instance = transform_json_to_instance(data)
     prediction = predict_instance(MODEL_PATH, instance)
     if prediction == 1:
-        result = 'System Violation'
+        result = "System Violation"
         send_results.send_data(data, result)
     elif prediction == 0:
-        result = 'Correct Invocation'
+        result = "Correct Invocation"
         send_results.send_data(data, result)
-
-
-
