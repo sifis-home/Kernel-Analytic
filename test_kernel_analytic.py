@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -11,18 +11,23 @@ def mock_predict_instance():
         yield mock_predict_instance
 
 
-"""
-def test_on_message(mock_predict_instance):
+@pytest.fixture
+def mock_kernel_classification():
+    with patch(
+        "catch_topic.kernel_classification.receive_data"
+    ) as mock_kernel_classification:
+        yield mock_kernel_classification
+
+
+def test_on_message(mock_kernel_classification):
     ws = MagicMock()
-    message = '{"Persistent": {"topic_name": "SIFIS:Privacy_Aware_Device_KERNEL_monitor", "value": {"dictionary": {"key": "value"}}}}'
+    message = '{"Persistent": {"topic_name": "SIFIS:Privacy_Aware_Device_KERNEL_monitor", "value": {"Dictionary": {"key": "value"}}}}'
 
-    with patch('catch_topic.transform_json_to_instance', return_value=[]):
-        import catch_topic
-        catch_topic.on_message(ws, message)
+    # Call the on_message function with the mock WebSocket and message
+    catch_topic.on_message(ws, message)
 
-    mock_predict_instance.assert_called_once()
-
-"""
+    # Assert that kernel_classification.receive_data() is called with the correct dictionary
+    mock_kernel_classification.assert_called_once_with({"key": "value"})
 
 
 def test_on_error():
