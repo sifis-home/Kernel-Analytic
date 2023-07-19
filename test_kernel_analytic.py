@@ -4,6 +4,8 @@ import pytest
 
 import catch_topic
 
+import joblib
+
 
 @pytest.fixture
 def mock_predict_instance():
